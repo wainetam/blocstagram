@@ -7,6 +7,10 @@
 //
 
 #import "ImagesTableViewController.h"
+#import "DataSource.h"
+#import "Media.h"
+#import "User.h"
+#import "Comment.h"
 
 @interface ImagesTableViewController ()
 
@@ -18,7 +22,7 @@
     self = [super initWithStyle:style];
     if (self) {
         // custom initialization
-        self.images = [NSMutableArray array];
+//        self.images = [NSMutableArray array];
     }
     
     return self;
@@ -27,14 +31,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    for (int i = 1; i <= 10; i++) {
-        NSString *imageName = [NSString stringWithFormat:@"%d.jpg", i];
-        UIImage *image = [UIImage imageNamed:imageName];
-        if (image) {
-            [self.images addObject:image];
-        }
-    }
-    // QUESTION: don't need to initialize this property?
+//    for (int i = 1; i <= 10; i++) {
+//        NSString *imageName = [NSString stringWithFormat:@"%d.jpg", i];
+//        UIImage *image = [UIImage imageNamed:imageName];
+//        if (image) {
+//            [self.images addObject:image];
+//        }
+//    }
+    // QUESTION: don't need to initialize this property (tableview property)?
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"imageCell"];
     
     // Uncomment the following line to preserve selection between presentations.
@@ -50,9 +54,16 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UIImage *image = self.images[indexPath.row];
+//    UIImage *image = self.images[indexPath.row];
+    Media *item = [self items][indexPath.row];
+    UIImage *image = item.image;
 
     return (CGRectGetWidth(self.view.frame) / image.size.width) * image.size.height;
+}
+
+//- (NSArray *)items {
+- (NSMutableArray *)items {
+    return [DataSource sharedInstance].mediaItems;
 }
 
 #pragma mark - Table view data source
@@ -66,7 +77,8 @@
 // QUESTION: where/how are these called? Are these delegated to the VC by the tableView object?
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return self.images.count;
+//    return self.images.count;
+    return [self items].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -88,8 +100,10 @@
         [cell.contentView addSubview:imageView];
     }
     
-    UIImage *image = self.images[indexPath.row];
-    imageView.image = image;
+//    UIImage *image = self.images[indexPath.row];
+//    imageView.image = image;
+    Media *item = [self items][indexPath.row];
+    imageView.image = item.image;
     
     return cell;
 }
@@ -105,7 +119,9 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [self.images removeObjectAtIndex:indexPath.row];
+//        [self.images removeObjectAtIndex:indexPath.row];
+        // QUESTION: how to implement without making mediaItems property of DataSource 'readwrite'? and array Mutable
+        [[self items] removeObjectAtIndex:indexPath.row];
         
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
