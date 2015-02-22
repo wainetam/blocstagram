@@ -49,7 +49,6 @@ static NSParagraphStyle *paragraphStyle;
     paragraphStyle = mutableParagraphStyle;
 }
 
-// QUESTION: when to make a class method vs instance method? isn't this based on specific Cell?  Is it bc easier than creating an instance and then calling the method?
 + (CGFloat)heightForMediaItem:(Media *)mediaItem width:(CGFloat)width {
     // make a cell
     MediaTableViewCell *layoutCell = [[MediaTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"layoutCell"];
@@ -60,16 +59,14 @@ static NSParagraphStyle *paragraphStyle;
 //    // give it to the media item
     layoutCell.mediaItem = mediaItem;
     
-    // QUESTION -- why need to re-layout frame?
-    layoutCell.frame = CGRectMake(0, 0, width, CGRectGetHeight(layoutCell.frame));
+//    layoutCell.frame = CGRectMake(0, 0, width, CGRectGetHeight(layoutCell.frame));
+//    [layoutCell setNeedsLayout];
     
-    // QUESTION why are these needed
-    [layoutCell setNeedsLayout];
     [layoutCell layoutIfNeeded];
     
-    // QUESTION -- why was height based on comment label before?
+    NSLog(@"height for media item %f", CGRectGetMaxY(layoutCell.mediaImageView.frame));
+    
     // get the actual height required for the cell
-//    return CGRectGetMaxY(layoutCell.commentLabel.frame);
     return CGRectGetMaxY(layoutCell.mediaImageView.frame);
 }
 
@@ -96,8 +93,7 @@ static NSParagraphStyle *paragraphStyle;
         
 //        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_mediaImageView]" options:kNilOptions metrics:nil views:viewDictionary]];
         
-        // QUESTION: getting errors in log
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView][_usernameAndCaptionLabel][_commentLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
+//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView][_usernameAndCaptionLabel][_commentLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
         
         self.imageHeightConstraint = [NSLayoutConstraint constraintWithItem:_mediaImageView
                                                                   attribute:NSLayoutAttributeHeight
@@ -147,7 +143,9 @@ static NSParagraphStyle *paragraphStyle;
                                                                         multiplier:1
                                                                           constant:0];
         
-        [self.contentView addConstraints:@[self.imageHeightConstraint, self.imageWidthConstraint, self.usernameAndCaptionLabelHeightConstraint, self.commentLabelHeightConstraint, self.usernameAndCaptionLabelLeftConstraint, self.commentLabelLeftConstraint]];
+        [self.contentView addConstraints:@[self.imageHeightConstraint, self.imageWidthConstraint, self.usernameAndCaptionLabelHeightConstraint, self.commentLabelHeightConstraint
+//                                           , self.usernameAndCaptionLabelLeftConstraint, self.commentLabelLeftConstraint
+                                           ]];
         
     }
     return self;

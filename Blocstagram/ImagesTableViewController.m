@@ -46,6 +46,8 @@
 //    UIImage *image = self.images[indexPath.row];
     Media *item = [self items][indexPath.row];
     
+//    tableView cellForRowAtIndexPath:<#(NSIndexPath *)#>
+    
     return [MediaTableViewCell heightForMediaItem:item width:CGRectGetWidth(self.view.frame)];
 }
 
