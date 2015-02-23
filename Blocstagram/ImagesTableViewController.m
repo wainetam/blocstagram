@@ -28,6 +28,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[DataSource sharedInstance] addObserver:self forKeyPath:@"mediaItems" options:0 context:nil]; // VC will observe single key
+    
     [self.tableView registerClass:[MediaTableViewCell class] forCellReuseIdentifier:@"mediaCell"];
     
     // Uncomment the following line to preserve selection between presentations.
@@ -37,16 +39,17 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+- (void)dealloc { // removes observer upon dealloc
+    [[DataSource sharedInstance] removeObserver:self forKeyPath:@"mediaItems"];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    UIImage *image = self.images[indexPath.row];
     Media *item = [self items][indexPath.row];
-    
-//    tableView cellForRowAtIndexPath:<#(NSIndexPath *)#>
     
     return [MediaTableViewCell heightForMediaItem:item width:CGRectGetWidth(self.view.frame)];
 }
@@ -54,6 +57,47 @@
 //- (NSArray *)items {
 - (NSMutableArray *)items {
     return [DataSource sharedInstance].mediaItems;
+}
+
+#pragma mark - Handling key-value notifications
+// all KVO notifications are sent to this method -- here, just have one key to observe
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object == [DataSource sharedInstance] && [keyPath isEqualToString:@"mediaItems"]) {
+        // we know mediaItems has changed. Let's see what kind of change it is
+        int kindOfChange = [change[NSKeyValueChangeKindKey] intValue];
+        
+             if (kindOfChange == NSKeyValueChangeSetting) {
+                 // someone set a brand new images array
+                 [self.tableView reloadData];
+             } else if (kindOfChange == NSKeyValueChangeInsertion || kindOfChange == NSKeyValueChangeRemoval || kindOfChange == NSKeyValueChangeReplacement) {
+                 // we have an incremental chnage: insertion, deletion, or replaced images
+                 
+                 // get a list of the index (or indices) that changed
+                 NSIndexSet *indexSetOfChanges = change[NSKeyValueChangeIndexesKey];
+                 
+                 // convert this NSIndexSet to an NSArray of NSIndexPath (which is what the table view animation methods require)
+                 NSMutableArray *indexPathsThatChanged = [NSMutableArray array];
+                 [indexSetOfChanges enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                     NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                     [indexPathsThatChanged addObject:newIndexPath];
+                 }];
+                 
+                 // call beginUpdates to tell the tableView that we're about to make changes
+                 [self.tableView beginUpdates];
+                 
+                 // tell the tableView what the changes are
+                 if (kindOfChange == NSKeyValueChangeInsertion) {
+                     [self.tableView insertRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+                 } else if (kindOfChange == NSKeyValueChangeRemoval) {
+                     [self.tableView deleteRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+                 } else if (kindOfChange == NSKeyValueChangeReplacement) {
+                     [self.tableView reloadRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+                 }
+                 
+                 // tell the tableView that we're done telling it about changes, and to complete the animation
+                 [self.tableView endUpdates];
+             }
+    }
 }
 
 #pragma mark - Table view data source
@@ -87,9 +131,12 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [[self items] removeObjectAtIndex:indexPath.row];
+//        [[self items] removeObjectAtIndex:indexPath.row];
         
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+        Media *item = [self items][indexPath.row];
+        [[DataSource sharedInstance] deleteMediaItem:item];
         
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view

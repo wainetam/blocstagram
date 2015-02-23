@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+@class Media;
 
 @interface DataSource : NSObject
 
@@ -14,5 +15,7 @@
 
 //@property (nonatomic, strong, readonly) NSArray *mediaItems;
 @property (nonatomic, strong) NSMutableArray *mediaItems;
+
+- (void)deleteMediaItem:(Media *)item;
 
 @end
