@@ -83,6 +83,7 @@
 //    [self infiniteScrollIfNecessary];
 //}
 
+//QUESTION: is this the right alternative delegate to use?
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     [self infiniteScrollIfNecessary];
 }
