@@ -25,6 +25,7 @@
 @property (nonatomic, strong) NSLayoutConstraint *commentLabelWidthConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *commentLabelLeftConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *commentLabelTopConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *usernameAndCaptionLabelTopConstraint;
 
 @end
 
@@ -71,7 +72,9 @@ static NSParagraphStyle *paragraphStyle;
 //    NSLog(@"height for media item %f", CGRectGetMaxY(layoutCell.mediaImageView.frame));
     
     // get the actual height required for the cell
-    return CGRectGetMaxY(layoutCell.mediaImageView.frame);
+    //QUESTION: CGRectGetMaxY(layoutCell.usernameAndCaptionLabel.frame) vs frame.size.height
+    return CGRectGetMaxY(layoutCell.mediaImageView.frame) + layoutCell.usernameAndCaptionLabel.frame.size.height + layoutCell.commentLabel.frame.size.height;
+//    return CGRectGetMaxY(layoutCell.mediaImageView.frame) + MAX(100, CGRectGetMaxY(layoutCell.usernameAndCaptionLabel.frame) + CGRectGetMaxY(layoutCell.commentLabel.frame));
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -91,11 +94,13 @@ static NSParagraphStyle *paragraphStyle;
         
         NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel);
         
-//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|" options:kNilOptions metrics:nil views:viewDictionary]];
-//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
-//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_commentLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|" options:kNilOptions metrics:nil views:viewDictionary]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_commentLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
+
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_mediaImageView][_usernameAndCaptionLabel][_commentLabel]" options:kNilOptions metrics:nil views:viewDictionary]];
         
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_mediaImageView]" options:kNilOptions metrics:nil views:viewDictionary]];
+//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_mediaImageView]" options:kNilOptions metrics:nil views:viewDictionary]];
         
 //        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView][_usernameAndCaptionLabel][_commentLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
         
@@ -107,13 +112,13 @@ static NSParagraphStyle *paragraphStyle;
                                                                  multiplier:1
                                                                    constant:100];
         
-        self.imageWidthConstraint = [NSLayoutConstraint constraintWithItem:_mediaImageView
-                                                                  attribute:NSLayoutAttributeWidth
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:nil
-                                                                  attribute:NSLayoutAttributeNotAnAttribute
-                                                                 multiplier:1
-                                                                   constant:320];
+//        self.imageWidthConstraint = [NSLayoutConstraint constraintWithItem:_mediaImageView
+//                                                                  attribute:NSLayoutAttributeWidth
+//                                                                  relatedBy:NSLayoutRelationEqual
+//                                                                     toItem:nil
+//                                                                  attribute:NSLayoutAttributeNotAnAttribute
+//                                                                 multiplier:1
+//                                                                   constant:320];
         
         self.usernameAndCaptionLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
                                                                                     attribute:NSLayoutAttributeHeight
@@ -123,13 +128,13 @@ static NSParagraphStyle *paragraphStyle;
                                                                                    multiplier:1
                                                                                      constant:100];
         
-        self.usernameAndCaptionLabelWidthConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
-                                                                                    attribute:NSLayoutAttributeWidth
-                                                                                    relatedBy:NSLayoutRelationEqual
-                                                                                       toItem:nil
-                                                                                    attribute:NSLayoutAttributeNotAnAttribute
-                                                                                   multiplier:1
-                                                                                     constant:100];
+//        self.usernameAndCaptionLabelWidthConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
+//                                                                                    attribute:NSLayoutAttributeWidth
+//                                                                                    relatedBy:NSLayoutRelationEqual
+//                                                                                       toItem:nil
+//                                                                                    attribute:NSLayoutAttributeNotAnAttribute
+//                                                                                   multiplier:1
+//                                                                                     constant:100];
         
         self.commentLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
                                                                          attribute:NSLayoutAttributeHeight
@@ -139,40 +144,48 @@ static NSParagraphStyle *paragraphStyle;
                                                                         multiplier:1
                                                                           constant:100];
         
-        self.commentLabelWidthConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
-                                                                         attribute:NSLayoutAttributeWidth
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:nil
-                                                                         attribute:NSLayoutAttributeNotAnAttribute
-                                                                        multiplier:1
-                                                                          constant:100];
+//        self.commentLabelWidthConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
+//                                                                         attribute:NSLayoutAttributeWidth
+//                                                                         relatedBy:NSLayoutRelationEqual
+//                                                                            toItem:nil
+//                                                                         attribute:NSLayoutAttributeNotAnAttribute
+//                                                                        multiplier:1
+//                                                                          constant:100];
 
         
-        self.usernameAndCaptionLabelLeftConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
-                                                                                    attribute:NSLayoutAttributeLeft
-                                                                                    relatedBy:NSLayoutRelationEqual
-                                                                                       toItem:_mediaImageView
-                                                                                    attribute:NSLayoutAttributeLeft
-                                                                                   multiplier:1
-                                                                                     constant:0];
+//        self.usernameAndCaptionLabelLeftConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
+//                                                                                    attribute:NSLayoutAttributeLeft
+//                                                                                    relatedBy:NSLayoutRelationEqual
+//                                                                                       toItem:_mediaImageView
+//                                                                                    attribute:NSLayoutAttributeLeft
+//                                                                                   multiplier:1
+//                                                                                     constant:0];
+//        
+//        self.commentLabelLeftConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
+//                                                                         attribute:NSLayoutAttributeLeft
+//                                                                         relatedBy:NSLayoutRelationEqual
+//                                                                            toItem:_mediaImageView
+//                                                                         attribute:NSLayoutAttributeLeft
+//                                                                        multiplier:1
+//                                                                          constant:0];
         
-        self.commentLabelLeftConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
-                                                                         attribute:NSLayoutAttributeLeft
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:_mediaImageView
-                                                                         attribute:NSLayoutAttributeLeft
-                                                                        multiplier:1
-                                                                          constant:0];
+//        self.commentLabelTopConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
+//                                                                       attribute:NSLayoutAttributeTop
+//                                                                       relatedBy:NSLayoutRelationEqual
+//                                                                          toItem:_usernameAndCaptionLabel
+//                                                                       attribute:NSLayoutAttributeLeft
+//                                                                      multiplier:1
+//                                                                        constant:20];
         
-        self.commentLabelTopConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
-                                                                       attribute:NSLayoutAttributeTop
-                                                                       relatedBy:NSLayoutRelationEqual
-                                                                          toItem:_usernameAndCaptionLabel
-                                                                       attribute:NSLayoutAttributeLeft
-                                                                      multiplier:1
-                                                                        constant:20];
+//        self.usernameAndCaptionLabelTopConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
+//                                                                       attribute:NSLayoutAttributeTop
+//                                                                       relatedBy:NSLayoutRelationEqual
+//                                                                          toItem:_mediaImageView
+//                                                                       attribute:NSLayoutAttributeBottom
+//                                                                      multiplier:1
+//                                                                        constant:200];
         
-        [self.contentView addConstraints:@[self.imageHeightConstraint, self.imageWidthConstraint, self.usernameAndCaptionLabelHeightConstraint, self.usernameAndCaptionLabelWidthConstraint, self.commentLabelHeightConstraint, self.commentLabelTopConstraint, self.commentLabelWidthConstraint, self.usernameAndCaptionLabelLeftConstraint, self.commentLabelLeftConstraint
+        [self.contentView addConstraints:@[self.imageHeightConstraint, self.usernameAndCaptionLabelHeightConstraint, self.commentLabelHeightConstraint
                                            ]];
         
     }
@@ -188,14 +201,17 @@ static NSParagraphStyle *paragraphStyle;
 
     // before layout, calculate the intrinsic size of the labels (the size they 'want' to be), and add 20 to the height
     CGSize maxSize = CGSizeMake(CGRectGetWidth(self.bounds), CGFLOAT_MAX);
+    // QUESTION: why doesn't username label extend beyond bounds (max width denoted in max size)
     CGSize usernameLabelSize = [self.usernameAndCaptionLabel sizeThatFits:maxSize];
     CGSize commentLabelSize = [self.commentLabel sizeThatFits:maxSize];
+    usernameLabelSize.width = maxSize.width;
     
-    // QUESTION: how to make string wrap?
+    // QUESTION: how to make string wrap? (line below doesn't work)
+    //    self.usernameAndCaptionLabelWidthConstraint.constant = maxSize.width;
     self.usernameAndCaptionLabelHeightConstraint.constant = usernameLabelSize.height + 20;
-    self.usernameAndCaptionLabelWidthConstraint.constant = CGRectGetWidth(self.contentView.bounds);
+
     self.commentLabelHeightConstraint.constant = commentLabelSize.height + 20;
-    self.commentLabelWidthConstraint.constant = CGRectGetWidth(self.contentView.bounds);
+//    self.commentLabelWidthConstraint.constant = CGRectGetWidth(self.contentView.bounds);
     
     // hide the line between cells
     self.separatorInset = UIEdgeInsetsMake(0, 0, 0, CGRectGetWidth(self.bounds));
@@ -213,7 +229,7 @@ static NSParagraphStyle *paragraphStyle;
         self.imageHeightConstraint = 0;
     }
     
-    self.imageWidthConstraint.constant = CGRectGetWidth(self.contentView.bounds);
+//    self.imageWidthConstraint.constant = CGRectGetWidth(self.contentView.bounds);
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
