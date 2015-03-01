@@ -15,8 +15,12 @@ typedef void (^NewItemCompletionBlock)(NSError *error);
 
 + (instancetype) sharedInstance;
 
+//QUESTION: why a class property
++ (NSString *) instagramClientID;
+
 //@property (nonatomic, strong, readonly) NSArray *mediaItems;
 @property (nonatomic, strong) NSMutableArray *mediaItems;
+@property (nonatomic, strong, readonly) NSString *accessToken;
 
 - (void)deleteMediaItem:(Media *)item;
 
