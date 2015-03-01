@@ -66,8 +66,16 @@
         
         // need to add images here
 //        self.isRefreshing = NO;
-        NSString *minID = [[self.mediaItems firstObject] idNumber];
-        NSDictionary *parameters = @{@"min_id":minID};
+        NSDictionary *parameters = nil;
+        
+        if ([self.mediaItems count] > 0) {
+            NSString *minID = [[self.mediaItems firstObject] idNumber];
+            parameters = @{@"min_id":minID};
+        } else {
+          // should save id of last deleted item and use that as minID
+        }
+//        NSString *minID = [[self.mediaItems firstObject] idNumber];
+//        NSDictionary *parameters = @{@"min_id":minID};
         
 //        if (completionHandler) {
 //            completionHandler(nil);
