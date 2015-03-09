@@ -27,8 +27,6 @@
         
         NSDictionary *captionDictionary = mediaDictionary[@"caption"];
         
-        // caption might be null (if there's no caption)
-        // QUESTION: why not check for NULL rather than KindOfClass
         if ([captionDictionary isKindOfClass:([NSDictionary class])]) {
             self.caption = captionDictionary[@"text"];
         } else {

@@ -220,7 +220,6 @@
 }
 
 #pragma mark - Key/Value Observing
-// QUESTION: how did these functions know to be autofilled as KVO methods?
 - (NSUInteger) countOfMediaItems {
     return self.mediaItems.count;
 }

@@ -13,7 +13,6 @@
 
 // why weak here?
 @property (nonatomic, weak) UIWebView *webView;
-// QUESTION: why strong to work? bc IB already establishes a strong reln
 @property (nonatomic, strong) UIBarButtonItem *backButton;
 
 @end
@@ -59,7 +58,6 @@ NSString *const LoginViewControllerDidGetAccessTokenNotification = @"LoginViewCo
     return @"http://bloc.io/";
 }
 
-// QUESTION: the point of this is to capture token if it's there and redirect if not?
 - (BOOL) webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     NSString *urlString = request.URL.absoluteString;
     if ([urlString hasPrefix:[self redirectURI]]) {
