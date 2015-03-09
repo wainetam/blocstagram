@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B66C8BA31A92EEC0008BB9E9 /* MediaTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B66C8BA21A92EEC0008BB9E9 /* MediaTableViewCell.m */; };
 		B6B289FD1A91544C00F5BF7C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B6B289FC1A91544C00F5BF7C /* main.m */; };
 		B6B28A001A91544C00F5BF7C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B6B289FF1A91544C00F5BF7C /* AppDelegate.m */; };
 		B6B28A081A91544C00F5BF7C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6B28A071A91544C00F5BF7C /* Images.xcassets */; };
@@ -22,6 +23,13 @@
 		B6B28A331A9156F400F5BF7C /* 9.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B6B28A291A9156F400F5BF7C /* 9.jpg */; };
 		B6B28A341A9156F400F5BF7C /* 10.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B6B28A2A1A9156F400F5BF7C /* 10.jpg */; };
 		B6B28A3A1A91581700F5BF7C /* ImagesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6B28A391A91581700F5BF7C /* ImagesTableViewController.m */; };
+		B6B28A3D1A91802000F5BF7C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = B6B28A3C1A91802000F5BF7C /* User.m */; };
+		B6B28A401A9181B400F5BF7C /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = B6B28A3F1A9181B400F5BF7C /* Media.m */; };
+		B6B28A431A9185E700F5BF7C /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = B6B28A421A9185E700F5BF7C /* Comment.m */; };
+		B6B28A461A91866800F5BF7C /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = B6B28A451A91866800F5BF7C /* DataSource.m */; };
+		B6B69F9B1AA2739800FA7711 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6B69F9A1AA2739800FA7711 /* LoginViewController.m */; };
+		B6CC25631AAD45F200AFA997 /* Blocstagram.xcworkspace in Resources */ = {isa = PBXBuildFile; fileRef = B6CC25621AAD45F200AFA997 /* Blocstagram.xcworkspace */; };
+		EB03D0F0220B9F1957EA9D44 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BABD62EB926DA5E3B11D87EC /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +43,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		19FDBF76F9326310BFB1B89F /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		B66C8BA11A92EEBF008BB9E9 /* MediaTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaTableViewCell.h; sourceTree = "<group>"; };
+		B66C8BA21A92EEC0008BB9E9 /* MediaTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaTableViewCell.m; sourceTree = "<group>"; };
 		B6B289F71A91544C00F5BF7C /* Blocstagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blocstagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6B289FB1A91544C00F5BF7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B6B289FC1A91544C00F5BF7C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -56,6 +67,19 @@
 		B6B28A2A1A9156F400F5BF7C /* 10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 10.jpg; sourceTree = "<group>"; };
 		B6B28A381A91581700F5BF7C /* ImagesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImagesTableViewController.h; path = ../ImagesTableViewController.h; sourceTree = "<group>"; };
 		B6B28A391A91581700F5BF7C /* ImagesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImagesTableViewController.m; path = ../ImagesTableViewController.m; sourceTree = "<group>"; };
+		B6B28A3B1A91802000F5BF7C /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		B6B28A3C1A91802000F5BF7C /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		B6B28A3E1A9181B400F5BF7C /* Media.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Media.h; sourceTree = "<group>"; };
+		B6B28A3F1A9181B400F5BF7C /* Media.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Media.m; sourceTree = "<group>"; };
+		B6B28A411A9185E700F5BF7C /* Comment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Comment.h; sourceTree = "<group>"; };
+		B6B28A421A9185E700F5BF7C /* Comment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Comment.m; sourceTree = "<group>"; };
+		B6B28A441A91866800F5BF7C /* DataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
+		B6B28A451A91866800F5BF7C /* DataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
+		B6B69F991AA2739800FA7711 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		B6B69F9A1AA2739800FA7711 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		B6CC25621AAD45F200AFA997 /* Blocstagram.xcworkspace */ = {isa = PBXFileReference; lastKnownFileType = wrapper.workspace; path = Blocstagram.xcworkspace; sourceTree = "<group>"; };
+		BABD62EB926DA5E3B11D87EC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7C406DF48918F4BC68BFF8C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB03D0F0220B9F1957EA9D44 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,12 +101,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		92A9B465A9009BBA34809559 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E7C406DF48918F4BC68BFF8C /* Pods.debug.xcconfig */,
+				19FDBF76F9326310BFB1B89F /* Pods.release.xcconfig */,
+				B6CC25621AAD45F200AFA997 /* Blocstagram.xcworkspace */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		B6B289EE1A91544B00F5BF7C = {
 			isa = PBXGroup;
 			children = (
 				B6B289F91A91544C00F5BF7C /* Blocstagram */,
 				B6B28A131A91544C00F5BF7C /* BlocstagramTests */,
 				B6B289F81A91544C00F5BF7C /* Products */,
+				92A9B465A9009BBA34809559 /* Pods */,
+				F930DB12F27CBB99642FB38B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,6 +136,18 @@
 			children = (
 				B6B28A381A91581700F5BF7C /* ImagesTableViewController.h */,
 				B6B28A391A91581700F5BF7C /* ImagesTableViewController.m */,
+				B6B28A3B1A91802000F5BF7C /* User.h */,
+				B6B28A3C1A91802000F5BF7C /* User.m */,
+				B6B28A411A9185E700F5BF7C /* Comment.h */,
+				B6B28A421A9185E700F5BF7C /* Comment.m */,
+				B6B28A441A91866800F5BF7C /* DataSource.h */,
+				B6B28A451A91866800F5BF7C /* DataSource.m */,
+				B6B69F991AA2739800FA7711 /* LoginViewController.h */,
+				B6B69F9A1AA2739800FA7711 /* LoginViewController.m */,
+				B66C8BA11A92EEBF008BB9E9 /* MediaTableViewCell.h */,
+				B66C8BA21A92EEC0008BB9E9 /* MediaTableViewCell.m */,
+				B6B28A3E1A9181B400F5BF7C /* Media.h */,
+				B6B28A3F1A9181B400F5BF7C /* Media.m */,
 				B6B289FE1A91544C00F5BF7C /* AppDelegate.h */,
 				B6B289FF1A91544C00F5BF7C /* AppDelegate.m */,
 				B6B28A071A91544C00F5BF7C /* Images.xcassets */,
@@ -151,6 +200,14 @@
 			name = Images;
 			sourceTree = "<group>";
 		};
+		F930DB12F27CBB99642FB38B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BABD62EB926DA5E3B11D87EC /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -158,9 +215,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B6B28A1A1A91544C00F5BF7C /* Build configuration list for PBXNativeTarget "Blocstagram" */;
 			buildPhases = (
+				026F1D1DFEE4408E6C40B839 /* Check Pods Manifest.lock */,
 				B6B289F31A91544C00F5BF7C /* Sources */,
 				B6B289F41A91544C00F5BF7C /* Frameworks */,
 				B6B289F51A91544C00F5BF7C /* Resources */,
+				3D307681C3B8F4A87289814B /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -237,6 +296,7 @@
 				B6B28A341A9156F400F5BF7C /* 10.jpg in Resources */,
 				B6B28A331A9156F400F5BF7C /* 9.jpg in Resources */,
 				B6B28A321A9156F400F5BF7C /* 8.jpg in Resources */,
+				B6CC25631AAD45F200AFA997 /* Blocstagram.xcworkspace in Resources */,
 				B6B28A311A9156F400F5BF7C /* 7.jpg in Resources */,
 				B6B28A2B1A9156F400F5BF7C /* 1.jpg in Resources */,
 				B6B28A2F1A9156F400F5BF7C /* 5.jpg in Resources */,
@@ -254,12 +314,51 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		026F1D1DFEE4408E6C40B839 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		3D307681C3B8F4A87289814B /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		B6B289F31A91544C00F5BF7C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6B28A3D1A91802000F5BF7C /* User.m in Sources */,
+				B6B28A431A9185E700F5BF7C /* Comment.m in Sources */,
+				B66C8BA31A92EEC0008BB9E9 /* MediaTableViewCell.m in Sources */,
+				B6B28A401A9181B400F5BF7C /* Media.m in Sources */,
 				B6B28A3A1A91581700F5BF7C /* ImagesTableViewController.m in Sources */,
+				B6B69F9B1AA2739800FA7711 /* LoginViewController.m in Sources */,
+				B6B28A461A91866800F5BF7C /* DataSource.m in Sources */,
 				B6B28A001A91544C00F5BF7C /* AppDelegate.m in Sources */,
 				B6B289FD1A91544C00F5BF7C /* main.m in Sources */,
 			);
@@ -364,6 +463,7 @@
 		};
 		B6B28A1B1A91544C00F5BF7C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E7C406DF48918F4BC68BFF8C /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Blocstagram/Info.plist;
@@ -374,6 +474,7 @@
 		};
 		B6B28A1C1A91544C00F5BF7C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 19FDBF76F9326310BFB1B89F /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Blocstagram/Info.plist;
@@ -435,6 +536,7 @@
 				B6B28A1C1A91544C00F5BF7C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B6B28A1D1A91544C00F5BF7C /* Build configuration list for PBXNativeTarget "BlocstagramTests" */ = {
 			isa = XCConfigurationList;
@@ -443,6 +545,7 @@
 				B6B28A1F1A91544C00F5BF7C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

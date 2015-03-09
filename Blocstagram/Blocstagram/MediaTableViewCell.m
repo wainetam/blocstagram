@@ -84,6 +84,7 @@ static NSParagraphStyle *paragraphStyle;
         // initialization code
         self.mediaImageView = [[UIImageView alloc] init];
         self.usernameAndCaptionLabel = [[UILabel alloc] init];
+        self.usernameAndCaptionLabel.numberOfLines = 0;
         self.commentLabel = [[UILabel alloc] init];
         self.commentLabel.numberOfLines = 0;
         
@@ -110,7 +111,7 @@ static NSParagraphStyle *paragraphStyle;
                                                                      toItem:nil
                                                                   attribute:NSLayoutAttributeNotAnAttribute
                                                                  multiplier:1
-                                                                   constant:100];
+                                                                   constant: [UIScreen mainScreen].bounds.size.width];
         
 //        self.imageWidthConstraint = [NSLayoutConstraint constraintWithItem:_mediaImageView
 //                                                                  attribute:NSLayoutAttributeWidth
@@ -204,7 +205,7 @@ static NSParagraphStyle *paragraphStyle;
     // QUESTION: why doesn't username label extend beyond bounds (max width denoted in max size)
     CGSize usernameLabelSize = [self.usernameAndCaptionLabel sizeThatFits:maxSize];
     CGSize commentLabelSize = [self.commentLabel sizeThatFits:maxSize];
-    usernameLabelSize.width = maxSize.width;
+    usernameLabelSize.width = [UIScreen mainScreen].bounds.size.width;
     
     // QUESTION: how to make string wrap? (line below doesn't work)
     //    self.usernameAndCaptionLabelWidthConstraint.constant = maxSize.width;
@@ -224,6 +225,7 @@ static NSParagraphStyle *paragraphStyle;
     self.commentLabel.attributedText = [self commentString];
     
     if (_mediaItem.image) {
+        
         self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
     } else {
         self.imageHeightConstraint = 0;
