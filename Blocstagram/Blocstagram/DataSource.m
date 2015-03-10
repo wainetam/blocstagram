@@ -11,6 +11,7 @@
 #import "Media.h"
 #import "Comment.h"
 #import "LoginViewController.h"
+#import <UICKeyChainStore.h>
 
 @interface DataSource () {
     NSMutableArray *_mediaItems;
@@ -20,7 +21,8 @@
 @property (nonatomic, assign) BOOL isLoadingOlderItems;
 @property (nonatomic, assign) BOOL thereAreNoMoreOlderMessages;
 @property (nonatomic, strong) NSString *accessToken;
-    
+//@property (nonatomic, assign) BOOL hasCachedContent;
+
 @end
 
 @implementation DataSource
@@ -43,7 +45,34 @@
     
     if (self) {
         // would normally unregister for notifications in dealloc, but since DataSource is a singleton, it will never get deallocated
-        [self registerForAccessTokenNotification];
+        self.accessToken = [UICKeyChainStore stringForKey:@"access token"];
+        
+        if (!self.accessToken) {
+            [self registerForAccessTokenNotification];
+        } else {
+//            [self populateDataWithParameters:nil completionHandler:nil];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
+                NSArray *storedMediaItems = [NSKeyedUnarchiver unarchiveObjectWithFile:fullPath];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (storedMediaItems.count > 0) { // if there are cachedItems
+                        NSMutableArray *mutableMediaItems = [storedMediaItems mutableCopy];
+                        
+                        [self willChangeValueForKey:@"mediaItems"];
+                        self.mediaItems = mutableMediaItems;
+                        [self didChangeValueForKey:@"mediaItems"];
+                        
+                        // refresh app if there is cached content already; user will not have to pull-to-refresh when app launched
+                        [self requestNewItemsWithCompletionHandler:nil];
+                        
+                    } else {
+                        [self populateDataWithParameters:nil completionHandler:nil];
+                    }
+                });
+                
+            });
+        }
     }
     
     return self;
@@ -53,6 +82,7 @@
     [[NSNotificationCenter defaultCenter] addObserverForName:LoginViewControllerDidGetAccessTokenNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
         self.accessToken = note.object;
         
+        [UICKeyChainStore setString:self.accessToken forKey:@"access token"];
         // got a token, populate initial data
         [self populateDataWithParameters:nil completionHandler:nil];
         
@@ -60,7 +90,7 @@
 }
 
 - (void) requestNewItemsWithCompletionHandler:(NewItemCompletionBlock)completionHandler {
-    self.thereAreNoMoreOlderMessages = NO; // QUESTION: why add this?
+    self.thereAreNoMoreOlderMessages = NO;
     if (self.isRefreshing == NO) {
         self.isRefreshing = YES;
         
@@ -188,6 +218,23 @@
         [self didChangeValueForKey:@"mediaItems"];
     }
 
+    if (tmpMediaItems.count > 0) {
+        // write the changes to disk
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSUInteger numberOfItemsToSave = MIN(self.mediaItems.count, 50);
+            NSArray *mediaItemsToSave = [self.mediaItems subarrayWithRange:NSMakeRange(0, numberOfItemsToSave)];
+            
+            NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
+            NSData *mediaItemData = [NSKeyedArchiver archivedDataWithRootObject:mediaItemsToSave];
+            
+            NSError *dataError;
+            BOOL wroteSuccessfully = [mediaItemData writeToFile:fullPath options:NSDataWritingAtomic | NSDataWritingFileProtectionCompleteUnlessOpen error:&dataError];
+            
+            if (!wroteSuccessfully) {
+                NSLog(@"Couldn't write file: %@", dataError);
+            }
+        });
+    }
 }
 
 - (void) downloadImageForMediaItem:(Media *)mediaItem {
@@ -197,7 +244,6 @@
             
             NSURLResponse *response;
             NSError *error;
-            // QUESTION: text said in checkpoint 532 Objective-C can only return 1 method, we pass in addresses of other variables as arguments, and the method sets them.
             NSData *imageData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
             
             if (imageData) {
@@ -217,6 +263,14 @@
             }
         });
     }
+}
+
+#pragma mark - Archiving
+- (NSString *) pathForFilename:(NSString *) filename {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths firstObject];
+    NSString *dataPath = [documentsDirectory stringByAppendingPathComponent:filename];
+    return dataPath;
 }
 
 #pragma mark - Key/Value Observing
