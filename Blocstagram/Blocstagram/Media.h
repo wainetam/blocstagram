@@ -21,5 +21,6 @@
 @property (nonatomic, strong) NSArray *comments;
 
 - (instancetype) initWithDictionary:(NSDictionary *)mediaDictionary;
+- (void) shareMediaWithViewController: (UIViewController *)vc;
 
 @end

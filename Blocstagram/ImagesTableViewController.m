@@ -12,6 +12,14 @@
 #import "User.h"
 #import "Comment.h"
 #import "MediaTableViewCell.h"
+#import "MediaFullScreenViewController.h"
+#import "MediaFullScreenAnimator.h"
+
+@interface ImagesTableViewController () <MediaTableViewCellDelegate, UIViewControllerTransitioningDelegate>
+
+@property (nonatomic, weak) UIImageView *lastTappedImageView;
+
+@end
 
 @implementation ImagesTableViewController
 
@@ -92,7 +100,6 @@
 //    [self infiniteScrollIfNecessary];
 //}
 
-//QUESTION: is this the right alternative delegate to use?
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     [self infiniteScrollIfNecessary];
 }
@@ -154,6 +161,7 @@
 - (MediaTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     MediaTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"mediaCell" forIndexPath:indexPath];
+    cell.delegate = self; // set the cell's delegate
     cell.mediaItem = [DataSource sharedInstance].mediaItems[indexPath.row];
     
     return cell;
@@ -179,6 +187,69 @@
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
+}
+
+#pragma mark - MediaTableViewCellDelegate
+
+- (void) cell:(MediaTableViewCell *)cell didTapImageView:(UIImageView *)imageView {
+    self.lastTappedImageView = imageView;
+    
+    MediaFullScreenViewController *fullScreenVC = [[MediaFullScreenViewController alloc] initWithMedia:cell.mediaItem];
+    
+    fullScreenVC.transitioningDelegate = self; // TransitioningDelegate
+    fullScreenVC.modalPresentationStyle = UIModalPresentationCustom;
+    
+    [self presentViewController:fullScreenVC animated:YES completion:nil];
+}
+
+- (void) cell:(MediaTableViewCell *)cell didLongPressImageView:(UIImageView *)imageView {
+    [cell.mediaItem shareMediaWithViewController:self];
+    
+//     NSMutableArray *itemsToShare = [NSMutableArray array];
+//    
+//    if (cell.mediaItem.caption.length > 0) {
+//        [itemsToShare addObject:cell.mediaItem.caption];
+//    }
+//    
+//    if (cell.mediaItem.image) {
+//        [itemsToShare addObject:cell.mediaItem.image];
+//    }
+//    
+//    if (itemsToShare.count > 0) {
+//        UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
+//        [self presentViewController:activityVC animated:YES completion:nil];
+//    }
+}
+
+//- (void) cell:(MediaTableViewCell *)cell didClickImageView:(UIImageView *)imageView {
+//    NSMutableArray *itemsToShare = [NSMutableArray array];
+//    
+//    if (cell.mediaItem.caption.length > 0) {
+//        [itemsToShare addObject:cell.mediaItem.caption];
+//    }
+//    
+//    if (cell.mediaItem.image) {
+//        [itemsToShare addObject:cell.mediaItem.image];
+//    }
+//    
+//    if (itemsToShare.count > 0) {
+//        UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
+//        [self presentViewController:activityVC animated:YES completion:nil];
+//    }
+//}
+
+#pragma mark - UIViewControllerTransitioningDelegate
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
+    MediaFullScreenAnimator *animator = [MediaFullScreenAnimator new];
+    animator.presenting = YES;
+    animator.cellImageView = self.lastTappedImageView;
+    return animator;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
+    MediaFullScreenAnimator *animator = [MediaFullScreenAnimator new];
+    animator.cellImageView = self.lastTappedImageView;
+    return animator;
 }
 
 /*

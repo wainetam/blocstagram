@@ -11,7 +11,7 @@
 #import "Comment.h"
 #import "User.h"
 
-@interface MediaTableViewCell ()
+@interface MediaTableViewCell () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIImageView *mediaImageView;
 @property (nonatomic, strong) UILabel *usernameAndCaptionLabel;
@@ -26,6 +26,8 @@
 @property (nonatomic, strong) NSLayoutConstraint *commentLabelLeftConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *commentLabelTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *usernameAndCaptionLabelTopConstraint;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 @end
 
@@ -72,7 +74,6 @@ static NSParagraphStyle *paragraphStyle;
 //    NSLog(@"height for media item %f", CGRectGetMaxY(layoutCell.mediaImageView.frame));
     
     // get the actual height required for the cell
-    //QUESTION: CGRectGetMaxY(layoutCell.usernameAndCaptionLabel.frame) vs frame.size.height
     return CGRectGetMaxY(layoutCell.mediaImageView.frame) + layoutCell.usernameAndCaptionLabel.frame.size.height + layoutCell.commentLabel.frame.size.height;
 //    return CGRectGetMaxY(layoutCell.mediaImageView.frame) + MAX(100, CGRectGetMaxY(layoutCell.usernameAndCaptionLabel.frame) + CGRectGetMaxY(layoutCell.commentLabel.frame));
 }
@@ -83,6 +84,16 @@ static NSParagraphStyle *paragraphStyle;
     if (self) {
         // initialization code
         self.mediaImageView = [[UIImageView alloc] init];
+        
+        self.mediaImageView.userInteractionEnabled = YES;
+        self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
+        self.tapGestureRecognizer.delegate = self;
+        [self.mediaImageView addGestureRecognizer:self.tapGestureRecognizer];
+        
+        self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressFired:)];
+        self.longPressGestureRecognizer.delegate = self;
+        [self.mediaImageView addGestureRecognizer:self.longPressGestureRecognizer];
+        
         self.usernameAndCaptionLabel = [[UILabel alloc] init];
         self.usernameAndCaptionLabel.numberOfLines = 0;
         self.commentLabel = [[UILabel alloc] init];
@@ -202,17 +213,22 @@ static NSParagraphStyle *paragraphStyle;
 
     // before layout, calculate the intrinsic size of the labels (the size they 'want' to be), and add 20 to the height
     CGSize maxSize = CGSizeMake(CGRectGetWidth(self.bounds), CGFLOAT_MAX);
-    // QUESTION: why doesn't username label extend beyond bounds (max width denoted in max size)
     CGSize usernameLabelSize = [self.usernameAndCaptionLabel sizeThatFits:maxSize];
     CGSize commentLabelSize = [self.commentLabel sizeThatFits:maxSize];
     usernameLabelSize.width = [UIScreen mainScreen].bounds.size.width;
     
-    // QUESTION: how to make string wrap? (line below doesn't work)
     //    self.usernameAndCaptionLabelWidthConstraint.constant = maxSize.width;
     self.usernameAndCaptionLabelHeightConstraint.constant = usernameLabelSize.height + 20;
 
     self.commentLabelHeightConstraint.constant = commentLabelSize.height + 20;
 //    self.commentLabelWidthConstraint.constant = CGRectGetWidth(self.contentView.bounds);
+
+    // section below moved from setMediaItem
+    if (_mediaItem.image) {
+        self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
+    } else {
+        self.imageHeightConstraint = 0;
+    }
     
     // hide the line between cells
     self.separatorInset = UIEdgeInsetsMake(0, 0, 0, CGRectGetWidth(self.bounds));
@@ -224,13 +240,6 @@ static NSParagraphStyle *paragraphStyle;
     self.usernameAndCaptionLabel.attributedText = [self usernameAndCaptionString];
     self.commentLabel.attributedText = [self commentString];
     
-    if (_mediaItem.image) {
-        
-        self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
-    } else {
-        self.imageHeightConstraint = 0;
-    }
-    
 //    self.imageWidthConstraint.constant = CGRectGetWidth(self.contentView.bounds);
 }
 
@@ -239,7 +248,6 @@ static NSParagraphStyle *paragraphStyle;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-// QUESTION: why does this squash some pictures?
     [super setSelected:selected animated:animated];
 //    [super setSelected:NO animated:animated];
 
@@ -281,6 +289,24 @@ static NSParagraphStyle *paragraphStyle;
     }
     
     return commentString;
+}
+
+#pragma mark - Image View
+
+- (void) tapFired:(UITapGestureRecognizer *)sender {
+    [self.delegate cell:self didTapImageView:self.mediaImageView];
+}
+
+- (void) longPressFired:(UILongPressGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        [self.delegate cell:self didLongPressImageView:self.mediaImageView];
+    }
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return self.isEditing == NO;
 }
 
 
