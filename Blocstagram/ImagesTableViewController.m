@@ -15,10 +15,12 @@
 #import "MediaFullScreenViewController.h"
 #import "MediaFullScreenAnimator.h"
 
-@interface ImagesTableViewController () <MediaTableViewCellDelegate, UIViewControllerTransitioningDelegate>
+@interface ImagesTableViewController () <MediaTableViewCellDelegate, UIViewControllerTransitioningDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, weak) UIImageView *lastTappedImageView;
-
+@property (nonatomic, assign) CGFloat decelerationRate;
+@property (nonatomic, assign) BOOL didBeginDeceleration;
+@property (nonatomic, assign) BOOL didBeginDragging;
 @end
 
 @implementation ImagesTableViewController
@@ -28,6 +30,7 @@
     if (self) {
         // custom initialization
 //        self.images = [NSMutableArray array];
+        self.decelerationRate = 10;
     }
     
     return self;
@@ -74,6 +77,16 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    Media *mediaItem = [DataSource sharedInstance].mediaItems[indexPath.row];
+    if (mediaItem.downloadState == MediaDownloadStateNeedsImage) {
+//        QUESTION -- conditions not working
+//        if (self.didBeginDeceleration && self.didBeginDragging) {
+            [[DataSource sharedInstance] downloadImageForMediaItem:mediaItem];
+//        }
+    }
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     Media *item = [self items][indexPath.row];
     
@@ -101,7 +114,25 @@
 //}
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    NSLog(@"ended dragging");
+    self.didBeginDragging = NO;
     [self infiniteScrollIfNecessary];
+}
+
+- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+    self.didBeginDeceleration = YES;
+    NSLog(@"slowing down");
+    
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    NSLog(@"did scroll");
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    NSLog(@"beginning drag");
+    self.didBeginDragging = YES;
+    self.didBeginDeceleration = NO;
 }
 
 #pragma mark - Handling key-value notifications
