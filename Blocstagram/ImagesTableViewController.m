@@ -190,7 +190,6 @@
 }
 
 #pragma mark - MediaTableViewCellDelegate
-
 - (void) cell:(MediaTableViewCell *)cell didTapImageView:(UIImageView *)imageView {
     self.lastTappedImageView = imageView;
     
@@ -202,23 +201,14 @@
     [self presentViewController:fullScreenVC animated:YES completion:nil];
 }
 
+- (void) cell:(MediaTableViewCell *)cell didTwoFingerTapImageView:(UIImageView *)imageView {
+    self.lastTappedImageView = imageView;
+    
+    [[DataSource sharedInstance] downloadImageForMediaItem: cell.mediaItem];
+}
+
 - (void) cell:(MediaTableViewCell *)cell didLongPressImageView:(UIImageView *)imageView {
     [cell.mediaItem shareMediaWithViewController:self];
-    
-//     NSMutableArray *itemsToShare = [NSMutableArray array];
-//    
-//    if (cell.mediaItem.caption.length > 0) {
-//        [itemsToShare addObject:cell.mediaItem.caption];
-//    }
-//    
-//    if (cell.mediaItem.image) {
-//        [itemsToShare addObject:cell.mediaItem.image];
-//    }
-//    
-//    if (itemsToShare.count > 0) {
-//        UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
-//        [self presentViewController:activityVC animated:YES completion:nil];
-//    }
 }
 
 //- (void) cell:(MediaTableViewCell *)cell didClickImageView:(UIImageView *)imageView {

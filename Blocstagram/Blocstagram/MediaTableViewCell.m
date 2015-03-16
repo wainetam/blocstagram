@@ -27,6 +27,7 @@
 @property (nonatomic, strong) NSLayoutConstraint *commentLabelTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *usernameAndCaptionLabelTopConstraint;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *twoFingerTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 @end
@@ -89,6 +90,13 @@ static NSParagraphStyle *paragraphStyle;
         self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
         self.tapGestureRecognizer.delegate = self;
         [self.mediaImageView addGestureRecognizer:self.tapGestureRecognizer];
+        
+        self.twoFingerTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(twoFingerTapFired:)];
+        
+        self.twoFingerTapGestureRecognizer.numberOfTouchesRequired = 2;
+        self.twoFingerTapGestureRecognizer.delegate = self;
+        
+        [self.mediaImageView addGestureRecognizer:self.twoFingerTapGestureRecognizer];
         
         self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressFired:)];
         self.longPressGestureRecognizer.delegate = self;
@@ -295,6 +303,12 @@ static NSParagraphStyle *paragraphStyle;
 
 - (void) tapFired:(UITapGestureRecognizer *)sender {
     [self.delegate cell:self didTapImageView:self.mediaImageView];
+}
+
+- (void) twoFingerTapFired:(UITapGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        [self.delegate cell:self didTwoFingerTapImageView:self.mediaImageView];
+    }
 }
 
 - (void) longPressFired:(UILongPressGestureRecognizer *)sender {
