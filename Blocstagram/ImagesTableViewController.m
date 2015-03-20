@@ -62,7 +62,7 @@
 - (void)infiniteScrollIfNecessary {
     NSIndexPath *bottomIndexPath = [[self.tableView indexPathsForVisibleRows] lastObject];
     
-    if (bottomIndexPath && bottomIndexPath.row == [DataSource sharedInstance].mediaItems.count - 1) {
+    if (bottomIndexPath && bottomIndexPath.row >= [DataSource sharedInstance].mediaItems.count - 5) {
         // the very last cell is on the screen
         [[DataSource sharedInstance] requestOldItemsWithCompletionHandler:nil];
     }
@@ -80,10 +80,11 @@
 - (void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     Media *mediaItem = [DataSource sharedInstance].mediaItems[indexPath.row];
     if (mediaItem.downloadState == MediaDownloadStateNeedsImage) {
-//        QUESTION -- conditions not working
-//        if (self.didBeginDeceleration && self.didBeginDragging) {
+        
+        if (self.tableView.decelerationRate != 0) { 
+            NSLog(@"tableview deceleration rate %f", self.tableView.decelerationRate);
             [[DataSource sharedInstance] downloadImageForMediaItem:mediaItem];
-//        }
+        }
     }
 }
 
@@ -94,12 +95,14 @@
 }
 
 - (CGFloat) tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    Media *item = [DataSource sharedInstance].mediaItems[indexPath.row];
-    if (item.image) {
-        return 350;
-    } else {
-        return 150;
-    }
+//    Media *item = [DataSource sharedInstance].mediaItems[indexPath.row];
+    
+    return [UIScreen mainScreen].bounds.size.width + 150;
+//    if (item.image) {
+//        return 350;
+//    } else {
+//        return 150;
+//    }
 }
 
 //- (NSArray *)items {
@@ -125,6 +128,10 @@
     
 }
 
+-(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    self.didBeginDeceleration = NO;
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     NSLog(@"did scroll");
 }
@@ -136,7 +143,7 @@
 }
 
 #pragma mark - Handling key-value notifications
-// all KVO notifications are sent to this method -- here, just have one key to observe
+// all KVO notifications are sent to this method -- here, just have one key to observe (mediaItems)
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (object == [DataSource sharedInstance] && [keyPath isEqualToString:@"mediaItems"]) {
         // we know mediaItems has changed. Let's see what kind of change it is
@@ -258,6 +265,10 @@
 //        [self presentViewController:activityVC animated:YES completion:nil];
 //    }
 //}
+
+- (void)cellDidPressLikeButton:(MediaTableViewCell *)cell {
+    [[DataSource sharedInstance] toggleLikeOnMediaItem:cell.mediaItem];
+}
 
 #pragma mark - UIViewControllerTransitioningDelegate
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {

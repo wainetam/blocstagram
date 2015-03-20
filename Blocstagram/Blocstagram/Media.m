@@ -45,6 +45,10 @@
         }
         
         self.comments = commentsArray;
+        
+        BOOL userHasLiked = [mediaDictionary[@"user_has_liked"] boolValue];
+        self.likeState = userHasLiked ? LikeStateLiked : LikeStateNotLiked;
+        self.likeCount = (int)mediaDictionary[@"likes"][@"count"];
     }
     
     return self;
@@ -66,10 +70,11 @@
         } else {
             self.downloadState = MediaDownloadStateNonRecoverableError;
         }
-//        QUESTION -- don't understand comment in checkpoint re: missing images will be retried at least once (in Retry Image Downloads)
         
         self.caption = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(caption))];
         self.comments = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(comments))];
+        self.likeState = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(likeState))];
+        self.likeCount = (int)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(likeCount))];
     }
     
     return self;
@@ -82,6 +87,8 @@
     [aCoder encodeObject:self.image forKey:NSStringFromSelector(@selector(image))];
     [aCoder encodeObject:self.caption forKey:NSStringFromSelector(@selector(caption))];
     [aCoder encodeObject:self.comments forKey:NSStringFromSelector(@selector(comments))];
+    [aCoder encodeInteger:self.likeState forKey:NSStringFromSelector(@selector(likeState))];
+    [aCoder encodeInteger:(int)self.likeCount forKey:NSStringFromSelector(@selector(likeCount))];
 }
 
 - (void) shareMediaWithViewController: (UIViewController *)vc {

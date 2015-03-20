@@ -46,7 +46,6 @@
     
     [self.scrollView addSubview:self.imageView];
 
-    //QUESTION: difference between UIBarButtonItem vs UIButton
     UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button addTarget:self action:@selector(didClickMediaToShare:) forControlEvents:UIControlEventTouchDown];
     [button setTitle:@"Share" forState:UIControlStateNormal];

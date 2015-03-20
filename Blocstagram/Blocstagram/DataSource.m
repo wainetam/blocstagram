@@ -54,7 +54,6 @@
         AFImageResponseSerializer *imageSerializer = [AFImageResponseSerializer serializer];
         imageSerializer.imageScale = 1.0;
         
-        // QUESTION: if comes into contact with format with no setup serializer, what happens?
         AFCompoundResponseSerializer *serializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:@[jsonSerializer, imageSerializer]];
         
         self.instagramOperationManager.responseSerializer = serializer;
@@ -316,6 +315,54 @@
         }];
     }
 }
+
+#pragma mark - Liking Media Items
+- (void) toggleLikeOnMediaItem:(Media *)mediaItem {
+    NSString *urlString = [NSString stringWithFormat:@"media/%@/likes", mediaItem.idNumber];
+    NSDictionary *parameters = @{@"access_token": self.accessToken};
+    
+    if (mediaItem.likeState == LikeStateNotLiked) {
+        mediaItem.likeState = LikeStateNotLiked;
+        
+        // QUESTION: how do you know can po 'operation.responseObject' and not 'parameters' (per text in checkpoint)
+        [self.instagramOperationManager POST:urlString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            mediaItem.likeState = LikeStateLiked;
+            
+            // QUESTION: change likeCount locally, but not on server side? is that ok?
+            mediaItem.likeCount++;
+            
+            [self saveToDisk];
+            
+            [self reloadMediaItem:mediaItem];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            mediaItem.likeState = LikeStateNotLiked;
+            [self reloadMediaItem:mediaItem];
+        }];
+    } else if (mediaItem.likeState == LikeStateLiked) {
+        mediaItem.likeState = LikeStateUnliking;
+        
+        [self.instagramOperationManager DELETE:urlString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            mediaItem.likeState = LikeStateNotLiked;
+            mediaItem.likeCount--;
+            [self reloadMediaItem:mediaItem];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            mediaItem.likeState = LikeStateLiked;
+            [self reloadMediaItem:mediaItem];
+        }];
+    }
+    
+    [self reloadMediaItem:mediaItem];
+}
+
+- (void)reloadMediaItem:(Media *)mediaItem {
+    NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+    NSUInteger index = [mutableArrayWithKVO indexOfObject:mediaItem];
+    [mutableArrayWithKVO replaceObjectAtIndex:index withObject:mediaItem];
+}
+
+//- (void)reloadButtonState:(Media *)mediaItem {
+//    
+//}
 
 #pragma mark - Archiving
 - (NSString *) pathForFilename:(NSString *) filename {
