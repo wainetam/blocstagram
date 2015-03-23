@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 //@class Media;
-@class Media, MediaTableViewCell;
+@class Media, MediaTableViewCell, ComposeCommentView;
 
  // custom delegate
 @protocol MediaTableViewCellDelegate <NSObject>
@@ -17,6 +17,8 @@
 - (void) cell:(MediaTableViewCell *)cell didLongPressImageView:(UIImageView *)imageView;
 - (void) cell:(MediaTableViewCell *)cell didTwoFingerTapImageView:(UIImageView *)imageView;
 - (void) cellDidPressLikeButton:(MediaTableViewCell *)cell;
+- (void) cellWillStartComposingComment:(MediaTableViewCell *)cell;
+- (void) cell:(MediaTableViewCell *)cell didComposeComment:(NSString *)comment;
 
 @end
 
@@ -24,6 +26,7 @@
 
 @property (nonatomic, strong) Media *mediaItem;
 @property (nonatomic, weak) id <MediaTableViewCellDelegate> delegate;
+@property (nonatomic, strong, readonly) ComposeCommentView *commentView;
 
 + (CGFloat) heightForMediaItem:(Media *)mediaItem width:(CGFloat)width;
 
@@ -32,5 +35,7 @@
 
 // set a new media item
 - (void)setMediaItem:(Media *)mediaItem;
+
+- (void)stopComposingComment;
 
 @end
