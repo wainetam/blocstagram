@@ -14,8 +14,9 @@
 #import "MediaTableViewCell.h"
 #import "MediaFullScreenViewController.h"
 #import "MediaFullScreenAnimator.h"
+#import "CameraViewController.h"
 
-@interface ImagesTableViewController () <MediaTableViewCellDelegate, UIViewControllerTransitioningDelegate, UIScrollViewDelegate>
+@interface ImagesTableViewController () <MediaTableViewCellDelegate, UIViewControllerTransitioningDelegate, CameraViewControllerDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, weak) UIImageView *lastTappedImageView;
 @property (nonatomic, assign) CGFloat decelerationRate;
@@ -60,6 +61,12 @@
     [self.tableView registerClass:[MediaTableViewCell class] forCellReuseIdentifier:@"mediaCell"];
     
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+    
+    // check to see if any photo capabilities are available; if so, add a camera button
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] || [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]) {
+        UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCamera target:self action:@selector(cameraPressed:)];
+        self.navigationItem.rightBarButtonItem = cameraButton;
+    }
     
     // calls keyboardWillShow and keyboardWillHide before keyboard shows/hides
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -221,6 +228,26 @@
                  [self.tableView endUpdates];
              }
     }
+}
+
+#pragma mark - Camera and CameraViewControllerDelegate
+
+- (void) cameraPressed:(UIBarButtonItem *)sender {
+    CameraViewController *cameraVC = [[CameraViewController alloc] init];
+    cameraVC.delegate = self;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:cameraVC];
+    [self presentViewController:nav animated:YES completion:nil];
+    return;
+}
+
+- (void) cameraViewController:(CameraViewController *)cameraViewController didCompleteWithImage:(UIImage *)image {
+    [cameraViewController dismissViewControllerAnimated:YES completion:^{
+        if (image) {
+            NSLog(@"Got an image!");
+        } else {
+            NSLog(@"Closed without an image");
+        }
+    }];
 }
 
 #pragma mark - Table view data source
