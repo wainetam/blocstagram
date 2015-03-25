@@ -29,6 +29,10 @@
 
 @end
 
+//- (UIImage *) imageWithFixedOrientation;
+//- (UIImage *) imageResizedToMatchAspectRatioOfSize:(CGSize)size;
+//- (UIImage *) imageCroppedToRect:(CGRect)cropRect;
+
 @implementation CameraViewController
 
 #pragma mark - Build View Hierarchy
@@ -261,8 +265,9 @@
         if (imageSampleBuffer) {
             NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
             UIImage *image = [UIImage imageWithData:imageData scale:[UIScreen mainScreen].scale];
-            image = [image imageWithFixedOrientation];
-            image = [image imageResizedToMatchAspectRatioOfSize:self.captureVideoPreviewLayer.bounds.size];
+            
+//            image = [image imageWithFixedOrientation];
+//            image = [image imageResizedToMatchAspectRatioOfSize:self.captureVideoPreviewLayer.bounds.size];
             
             UIView *leftLine = self.verticalLines.firstObject;
             UIView *rightLine = self.verticalLines.lastObject;
@@ -274,7 +279,10 @@
             CGRect cropRect = gridRect;
             cropRect.origin.x = (CGRectGetMinX(gridRect) + (image.size.width - CGRectGetWidth(gridRect)) / 2);
             
-            image = [image imageCroppedToRect:cropRect];
+//            image = [image imageCroppedToRect:cropRect];
+            
+            image = [image imageByScalingToSize:self.captureVideoPreviewLayer.bounds.size andCroppingWithRect:cropRect];
+
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.delegate cameraViewController:self didCompleteWithImage:image];
