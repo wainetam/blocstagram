@@ -334,8 +334,6 @@
 
 #pragma mark - Keyboard Handling
 
-// QUESTION what to do -- figure out if was rotated
-
 - (void)keyboardWillShow:(NSNotification *)notification {
     int orientation = [UIDevice currentDevice].orientation;
     
@@ -357,21 +355,6 @@
     UIEdgeInsets contentInsets;
     UIEdgeInsets scrollIndicatorInsets;
     
-//    if (UIDeviceOrientationIsPortrait(orientation)) {
-//        if (!CGPointEqualToPoint(self.portraitContentOffset, contentOffset)) {
-//            self.portraitContentOffset = self.tableView.contentOffset;
-//        } else {
-//            contentOffset = self.portraitContentOffset;
-//            self.portraitContentOffset = contentOffset;
-//        }
-//    } else {
-//        if (CGPointEqualToPoint(self.landscapeContentOffset, CGPointZero)) {
-//            self.landscapeContentOffset = self.tableView.contentOffset;
-//        } else {
-//            contentOffset = self.landscapeContentOffset;
-//        }
-//    }
-    
     NSLog(@"%@ contentOffset", NSStringFromCGPoint(contentOffset));
     
     contentInsets = self.tableView.contentInset;
@@ -386,50 +369,34 @@
         }
     }
     
-//    if (self.lastKeyboardAdjustment != 0) {
-//        heightToScroll = self.lastKeyboardAdjustment;
-//    } else {
-//        heightToScroll = 0;
-//    }
-//    CGFloat heightToScroll = 0;
-//
     CGFloat keyboardY = CGRectGetMinY(keyboardFrameInViewCoordinates);
 //    NSLog(@"%f keyboardY", keyboardY);
-    CGFloat commentViewY = CGRectGetMinY(commentViewFrameInViewCoordinates);
+    CGFloat commentViewY = CGRectGetMaxY(commentViewFrameInViewCoordinates);
 //    NSLog(@"%f commentViewY", commentViewY);
     
     CGFloat difference = commentViewY - keyboardY;
     
-    if (difference > 0) {
+//    if (difference > 0) {
         NSLog(@"%f difference", difference);
         heightToScroll += difference;
-    }
+//    }
     
-    if (CGRectIntersectsRect(keyboardFrameInViewCoordinates, commentViewFrameInViewCoordinates)) {
-//        NSLog(@"intersecting rectangles");
-        // the two frames intersect (the keyboard would block the view)
-        CGRect intersectionRect = CGRectIntersection(keyboardFrameInViewCoordinates, commentViewFrameInViewCoordinates);
-        heightToScroll += CGRectGetHeight(intersectionRect);
-    }
-    
-    if (heightToScroll > 0) {
+//    if (heightToScroll > 0) {
         NSLog(@"%f heightToScroll", heightToScroll);
         if (UIDeviceOrientationIsPortrait(orientation)) {
             //            contentOffset = self.portraitContentOffset;
         } else {
 //            contentOffset = self.landscapeContentOffset;
         }
-        contentInsets.bottom += heightToScroll;
-        scrollIndicatorInsets.bottom += heightToScroll;
+        contentInsets.bottom = keyboardFrameInViewCoordinates.size.height;
+        scrollIndicatorInsets.bottom = keyboardFrameInViewCoordinates.size.height;
         contentOffset.y += heightToScroll;
-        
-        // QUESTION: where do these userInfo key values come from?
+    
         NSNumber *durationNumber = notification.userInfo[UIKeyboardAnimationDurationUserInfoKey];
         NSNumber *curveNumber = notification.userInfo[UIKeyboardAnimationCurveUserInfoKey];
         
         NSTimeInterval duration = durationNumber.doubleValue;
         UIViewAnimationCurve curve = curveNumber.unsignedIntegerValue;
-        // QUESTION what is <<
         UIViewAnimationOptions options = curve << 16;
         
         [UIView animateWithDuration:duration delay:0 options:options animations:^{
@@ -437,25 +404,17 @@
             self.tableView.scrollIndicatorInsets = scrollIndicatorInsets;
             self.tableView.contentOffset = contentOffset;
         } completion:nil];
-    }
-    
-    self.lastKeyboardAdjustment = heightToScroll;
-    
-//    if (UIDeviceOrientationIsPortrait(orientation)) {
-//        self.lastPortraitHeightToScroll = heightToScroll;
 //    }
+    
+//    self.lastKeyboardAdjustment = heightToScroll;
 }
 
-// QUESTION: why is this called after -- bc of rotation?
-- (void)keyboardWillHide:(NSNotification *)notification {
-//    self.landscapeContentOffset = CGPointZero;
-//    self.portraitContentOffset = CGPointZero;
-    
+- (void)keyboardWillHide:(NSNotification *)notification {    
     UIEdgeInsets contentInsets = self.tableView.contentInset;
-    contentInsets.bottom -= self.lastKeyboardAdjustment;
+    contentInsets.bottom = 0;
     
     UIEdgeInsets scrollIndicatorInsets = self.tableView.scrollIndicatorInsets;
-    scrollIndicatorInsets.bottom -= self.lastKeyboardAdjustment;
+    scrollIndicatorInsets.bottom = 0;
     
     NSNumber *durationNumber = notification.userInfo[UIKeyboardAnimationDurationUserInfoKey];
     NSNumber *curveNumber = notification.userInfo[UIKeyboardAnimationCurveUserInfoKey];

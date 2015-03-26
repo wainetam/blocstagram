@@ -328,7 +328,6 @@
         [self.instagramOperationManager POST:urlString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
             mediaItem.likeState = LikeStateLiked;
             
-            // QUESTION: change likeCount locally, but not on server side? is that ok?
             mediaItem.likeCount++;
             
             [self saveToDisk];

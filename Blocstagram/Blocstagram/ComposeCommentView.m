@@ -109,7 +109,6 @@
 
 #pragma mark - Button Target
 
-//QUESTION: how do you know that keyboard will appear -- when init UITextField and it becomes first responder?
 - (void) commentButtonPressed:(UIButton *)sender {
     if (self.isWritingComment) {
         [self.textView resignFirstResponder];
