@@ -9,6 +9,7 @@
 #import "ImageLibraryViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "CropImageViewController.h"
+//#import "PostCollectionViewCell.h"
 
 @interface ImageLibraryViewController () <CropImageViewControllerDelegate>
 
@@ -123,7 +124,7 @@
     static NSInteger imageViewTag = 54321;
     
     UICollectionViewCell *cell =[collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
-    
+        
     UIImageView *imageView = (UIImageView *)[cell.contentView viewWithTag:imageViewTag];
     
     if (!imageView) {
