@@ -135,7 +135,7 @@
     [super viewWillLayoutSubviews];
     
     CGFloat width = CGRectGetWidth(self.view.bounds);
-    self.topView.frame = CGRectMake(0, self.topLayoutGuide.length, width, 60);
+    self.topView.frame = CGRectMake(0, self.topLayoutGuide.length, width, 44);
     
     CGFloat yOriginOfBottomView = CGRectGetMaxY(self.topView.frame) + width;
     CGFloat heightOfBottomView = CGRectGetHeight(self.view.frame) - yOriginOfBottomView;
@@ -232,7 +232,6 @@
             cropRect.origin.x = (CGRectGetMinX(gridRect) + (image.size.width - CGRectGetWidth(gridRect)) / 2);
             
             image = [image imageByScalingToSize:self.captureVideoPreviewLayer.bounds.size andCroppingWithRect:cropRect];
-
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.delegate cameraViewController:self didCompleteWithImage:image];
