@@ -11,11 +11,10 @@
 
 @interface MediaFullScreenViewController () <UIScrollViewDelegate>
 
-@property (nonatomic, strong) Media *media;
+//@property (nonatomic, strong) Media *media;
 @property (nonatomic, strong) UITapGestureRecognizer *tap;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTap;
-@property (nonatomic, strong) UIBarButtonItem *shareButton;
-@property (nonatomic, strong) UIButton *button;
+//@property (nonatomic, strong) UIButton *shareButton;
 
 @end
 
@@ -37,7 +36,6 @@
     self.scrollView = [UIScrollView new];
     self.scrollView.delegate = self;
     self.scrollView.backgroundColor = [UIColor whiteColor];
-    self.title = @"Herro";
     
     [self.view addSubview:self.scrollView];
     
@@ -46,17 +44,17 @@
     
     [self.scrollView addSubview:self.imageView];
 
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [button addTarget:self action:@selector(didClickMediaToShare:) forControlEvents:UIControlEventTouchDown];
-    [button setTitle:@"Share" forState:UIControlStateNormal];
-    button.tintColor = [UIColor blackColor];
+    self.shareButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [self.shareButton addTarget:self action:@selector(didClickMediaToShare:) forControlEvents:UIControlEventTouchDown];
+    [self.shareButton setTitle:@"Share" forState:UIControlStateNormal];
+    self.shareButton.tintColor = [UIColor blackColor];
     long viewWidth = self.view.bounds.size.width;
     
-    button.frame = CGRectMake(0.6 * viewWidth, 30, 100, 40);
-    button.layer.borderWidth = 2.0f;
-    button.layer.cornerRadius = 4.0f;
+    self.shareButton.frame = CGRectMake(0.6 * viewWidth, 30, 100, 40);
+    self.shareButton.layer.borderWidth = 2.0f;
+    self.shareButton.layer.cornerRadius = 4.0f;
 
-    [self.view addSubview:button];
+    [self.view addSubview:self.shareButton];
     
     self.scrollView.contentSize = self.media.image.size;
     
@@ -85,8 +83,15 @@
     [super viewWillLayoutSubviews];
     self.scrollView.frame = self.view.bounds;
     
+    [self recalculateZoomScale];
+}
+
+- (void) recalculateZoomScale {
     CGSize scrollViewFrameSize = self.scrollView.frame.size;
     CGSize scrollViewContentSize = self.scrollView.contentSize;
+    
+    scrollViewContentSize.height /= self.scrollView.zoomScale;
+    scrollViewContentSize.width /= self.scrollView.zoomScale;
     
     CGFloat scaleWidth = scrollViewFrameSize.width / scrollViewContentSize.width;
     CGFloat scaleHeight = scrollViewFrameSize.height / scrollViewContentSize.height;

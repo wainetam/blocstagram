@@ -21,7 +21,6 @@
 
 @implementation CameraToolbar
 
-// QUESTION: can you create any init function after alloc?
 - (instancetype) initWithImageNames:(NSArray *)imageNames {
     self = [super init];
     
@@ -49,6 +48,10 @@
         
         self.purpleView = [UIView new];
         self.purpleView.backgroundColor = [UIColor colorWithRed:0.345 green:0.318 blue:0.424 alpha:1]; // #58516c
+        
+        for (UIView *view in @[self.whiteView, self.purpleView, self.leftButton, self.cameraButton, self.rightButton]) {
+            [self addSubview:view];
+        }
     }
     
     return self;

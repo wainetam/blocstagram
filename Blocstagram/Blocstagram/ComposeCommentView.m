@@ -113,7 +113,7 @@
     if (self.isWritingComment) {
         [self.textView resignFirstResponder];
 //    QUESTION: why is the below line necessary?
-//        self.textView.userInteractionEnabled = NO;
+        self.textView.userInteractionEnabled = NO;
         [self.delegate commentViewDidPressCommentButton:self];
     } else {
         [self setIsWritingComment:YES animated:YES];
