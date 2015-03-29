@@ -256,6 +256,37 @@
         }
     }];
     
+    // gaussian filter
+    
+    [self.photoFilterOperationQueue addOperationWithBlock:^{
+        CIFilter *gaussianFilter = [CIFilter filterWithName:@"CIGaussianBlur"];
+        
+        if (gaussianFilter) {
+            [gaussianFilter setValue:sourceCIImage forKey:kCIInputImageKey];
+            [self addCIImageToCollectionView:gaussianFilter.outputImage withFilterTitle:NSLocalizedString(@"Gaussian", @"Gaussian filter")];
+        }
+    }];
+    
+    // pixel noir filter
+    
+    [self.photoFilterOperationQueue addOperationWithBlock:^{
+        CIFilter *pixelFilter = [CIFilter filterWithName:@"CIPixellate"];
+        CIFilter *noirFilter = [CIFilter filterWithName:@"CIPhotoEffectNoir"];
+        
+        if (pixelFilter) {
+            [pixelFilter setValue:sourceCIImage forKey:kCIInputImageKey];
+            
+            CIImage *result = pixelFilter.outputImage;
+            
+            if (noirFilter) {
+                [noirFilter setValue:result forKeyPath:kCIInputImageKey];
+                result = noirFilter.outputImage;
+            }
+            
+            [self addCIImageToCollectionView:result withFilterTitle:NSLocalizedString(@"Pixel NOIR", @"Pixel Noir filter")];
+        }
+    }];
+    
     // drunk filter
     [self.photoFilterOperationQueue addOperationWithBlock:^{
         CIFilter *drunkFilter = [CIFilter filterWithName:@"CIConvolution5X5"];
