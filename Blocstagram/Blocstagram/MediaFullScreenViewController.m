@@ -15,6 +15,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *tap;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTap;
 //@property (nonatomic, strong) UIButton *shareButton;
+@property (nonatomic, strong) UITapGestureRecognizer *tapBehind;
 
 @end
 
@@ -50,7 +51,7 @@
     self.shareButton.tintColor = [UIColor blackColor];
     long viewWidth = self.view.bounds.size.width;
     
-    self.shareButton.frame = CGRectMake(0.6 * viewWidth, 30, 100, 40);
+    self.shareButton.frame = CGRectMake(0.55 * viewWidth, 30, 80, 40);
     self.shareButton.layer.borderWidth = 2.0f;
     self.shareButton.layer.cornerRadius = 4.0f;
 
@@ -68,8 +69,17 @@
     
     [self.tap requireGestureRecognizerToFail:self.doubleTap];
     
-    [self.scrollView addGestureRecognizer:self.tap];
-    [self.scrollView addGestureRecognizer:self.doubleTap];
+    if (isPhone == NO) {
+        self.tapBehind = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapBehindFired:)];
+        [self.tapBehind setNumberOfTapsRequired:1];
+        self.tapBehind.cancelsTouchesInView = NO;
+        
+//        UIViewController* presentingVC = self.presentingViewController;
+//        NSLog(@"presentingVC");
+    }
+
+//    [self.scrollView addGestureRecognizer:self.tap];
+//    [self.scrollView addGestureRecognizer:self.doubleTap];
     
     // Do any additional setup after loading the view.
 }
@@ -106,6 +116,28 @@
     
     // make sure image starts out centered
     [self centerScrollView];
+    
+}
+
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    if (isPhone == NO) {
+        [[[[UIApplication sharedApplication] delegate] window] removeGestureRecognizer:self.tapBehind];
+    }
+}
+
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if (isPhone == NO) {
+        //    QUESTION: what's the difference between lines 119 and 120?
+        
+        [self.view.window setBackgroundColor:[UIColor blueColor]];
+//        [self.presentingViewController.view addGestureRecognizer:self.tapBehind];
+        [[[[UIApplication sharedApplication] delegate] window] addGestureRecognizer:self.tapBehind];
+        //        [self.view addGestureRecognizer:self.tapBehind];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -164,6 +196,21 @@
         [self.scrollView zoomToRect:CGRectMake(x, y, width, height) animated:YES];
     } else {
         [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:YES];
+    }
+}
+
+//QUESTION: topBehindFired never called?
+- (void) tapBehindFired:(UITapGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        CGPoint location = [sender locationInView:nil]; // passing nil gives us coordinates in the window
+        CGPoint locationInVC = [self.presentedViewController.view convertPoint:location fromView:self.view.window];
+        
+        if ([self.presentedViewController.view pointInside:locationInVC withEvent:nil] == NO) {
+        // the tap was outside the VC's view
+            if (self.presentingViewController) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }
+        }
     }
 }
 

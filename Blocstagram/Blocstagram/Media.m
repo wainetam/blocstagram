@@ -9,6 +9,8 @@
 #import "Media.h"
 #import "User.h"
 #import "Comment.h"
+#import "ImagesTableViewController.h"
+//#import "MediaFullScreenViewController.h"
 
 @implementation Media
 
@@ -105,7 +107,23 @@
     
     if (itemsToShare.count > 0) {
         UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
-        [vc presentViewController:activityVC animated:YES completion:nil];
+        if (isPhone) {
+            [vc presentViewController:activityVC animated:YES completion:nil];
+        } else {
+            UIPopoverController *popup = [[UIPopoverController alloc] initWithContentViewController:activityVC];
+            popup.popoverContentSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, 480);
+            
+            UIImageView *imageView = ((ImagesTableViewController *)vc).lastLongPressedImageView;
+            CGFloat imageViewX = imageView.frame.origin.x;
+            CGFloat imageViewY = imageView.frame.origin.y;
+            // QUESTION: why always get same x, y coords
+            
+            CGRect imageViewRect = CGRectMake(imageViewX, imageViewY, imageView.frame.size.width, imageView.frame.size.height);
+            
+            ((ImagesTableViewController *)vc).sharePopover = popup;
+            
+            [((ImagesTableViewController *)vc).sharePopover presentPopoverFromRect:imageViewRect inView:imageView.superview permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        }
     }
 }
 

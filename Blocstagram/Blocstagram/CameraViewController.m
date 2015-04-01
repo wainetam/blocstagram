@@ -82,7 +82,6 @@
     [self.imagePreview.layer addSublayer:self.captureVideoPreviewLayer];
     
     [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-        // QUESTION this is executed on main thread?
         dispatch_async(dispatch_get_main_queue(), ^{
             if (granted) {
                 AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];

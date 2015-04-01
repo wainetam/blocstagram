@@ -13,6 +13,9 @@ typedef void (^NewItemCompletionBlock)(NSError *error);
 
 @interface DataSource : NSObject
 
+extern NSString *const ImageFinishedNotification;
+//http://stackoverflow.com/questions/20397058/objective-c-define-vs-extern-const
+
 + (instancetype) sharedInstance;
 
 + (NSString *) instagramClientID;

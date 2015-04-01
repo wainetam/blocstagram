@@ -83,7 +83,6 @@ static NSParagraphStyle *paragraphStyle;
     
     // get the actual height required for the cell
     
-    //QUESTION is this right?
 //    return CGRectGetMaxY(layoutCell.mediaImageView.frame) + layoutCell.usernameAndCaptionLabel.frame.size.height + layoutCell.commentLabel.frame.size.height;
     
     return CGRectGetMaxY(layoutCell.commentView.frame);
@@ -133,133 +132,97 @@ static NSParagraphStyle *paragraphStyle;
             view.translatesAutoresizingMaskIntoConstraints = NO;
         }
         
-        NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton, _likeCount, _commentView);
-        
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|" options:kNilOptions metrics:nil views:viewDictionary]];
-//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
+        [self createConstraints];
+    }
 
-        // QUESTION -- how to align all subviews TOP
-        // single line, it is aligned; otherwise, slightly off top align
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel][_likeCount(==55)][_likeButton(==38)]|" options:NSLayoutFormatAlignAllTop metrics:nil views:viewDictionary]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_commentLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
+    return self;
+}
 
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_commentView]|" options:kNilOptions metrics:nil views:viewDictionary]];
-        
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_mediaImageView][_usernameAndCaptionLabel][_commentLabel][_commentView(==100)]" options:kNilOptions metrics:nil views:viewDictionary]];
-        
-//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_mediaImageView]" options:kNilOptions metrics:nil views:viewDictionary]];
-        
-//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView][_usernameAndCaptionLabel][_commentLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
-        
-        self.imageHeightConstraint = [NSLayoutConstraint constraintWithItem:_mediaImageView
+
+- (void)awakeFromNib {
+    // Initialization code
+}
+
+- (void) createConstraints {
+    if (isPhone) {
+        [self createPhoneConstraints];
+    } else {
+        [self createPadConstraints];
+    }
+    
+    [self createCommonConstraints];
+}
+
+- (void) createPadConstraints {
+    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton, _commentView, _likeCount);
+    
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_mediaImageView(==320)]" options:kNilOptions metrics:nil views:viewDictionary]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:_mediaImageView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+}
+
+- (void) createPhoneConstraints {
+    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton, _commentView, _likeCount);
+    
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|" options:kNilOptions metrics:nil views:viewDictionary]];
+}
+    
+- (void) createCommonConstraints {
+    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton, _commentView, _likeCount);
+    // QUESTION -- how to align all subviews TOP
+    // single line, it is aligned; otherwise, slightly off top align
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel][_likeCount(==55)][_likeButton(==38)]|" options:NSLayoutFormatAlignAllTop metrics:nil views:viewDictionary]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_commentLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
+    
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_commentView]|" options:kNilOptions metrics:nil views:viewDictionary]];
+    
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_mediaImageView][_usernameAndCaptionLabel][_commentLabel][_commentView(==100)]" options:kNilOptions metrics:nil views:viewDictionary]];
+    
+    
+    self.imageHeightConstraint = [NSLayoutConstraint constraintWithItem:_mediaImageView
+                                                              attribute:NSLayoutAttributeHeight
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:nil
+                                                              attribute:NSLayoutAttributeNotAnAttribute
+                                                             multiplier:1
+                                                               constant: [UIScreen mainScreen].bounds.size.width];
+    
+    self.usernameAndCaptionLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
+                                                                                attribute:NSLayoutAttributeHeight
+                                                                                relatedBy:NSLayoutRelationEqual
+                                                                                   toItem:nil
+                                                                                attribute:NSLayoutAttributeNotAnAttribute
+                                                                               multiplier:1
+                                                                                 constant:100];
+    
+    self.likeButtonHeightConstraint = [NSLayoutConstraint constraintWithItem:_likeButton
+                                                                   attribute:NSLayoutAttributeHeight
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:nil
+                                                                   attribute:NSLayoutAttributeNotAnAttribute
+                                                                  multiplier:1
+                                                                    constant:38];
+    
+    self.likeCountHeightConstraint = [NSLayoutConstraint constraintWithItem:_likeCount
                                                                   attribute:NSLayoutAttributeHeight
                                                                   relatedBy:NSLayoutRelationEqual
                                                                      toItem:nil
                                                                   attribute:NSLayoutAttributeNotAnAttribute
                                                                  multiplier:1
-                                                                   constant: [UIScreen mainScreen].bounds.size.width];
-        
-//        self.imageWidthConstraint = [NSLayoutConstraint constraintWithItem:_mediaImageView
-//                                                                  attribute:NSLayoutAttributeWidth
-//                                                                  relatedBy:NSLayoutRelationEqual
-//                                                                     toItem:nil
-//                                                                  attribute:NSLayoutAttributeNotAnAttribute
-//                                                                 multiplier:1
-//                                                                   constant:320];
-        
-        self.usernameAndCaptionLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
-                                                                                    attribute:NSLayoutAttributeHeight
-                                                                                    relatedBy:NSLayoutRelationEqual
-                                                                                       toItem:nil
-                                                                                    attribute:NSLayoutAttributeNotAnAttribute
-                                                                                   multiplier:1
-                                                                                     constant:100];
-
-        self.likeButtonHeightConstraint = [NSLayoutConstraint constraintWithItem:_likeButton
-                                                                                    attribute:NSLayoutAttributeHeight
-                                                                                    relatedBy:NSLayoutRelationEqual
-                                                                                       toItem:nil
-                                                                                    attribute:NSLayoutAttributeNotAnAttribute
-                                                                                   multiplier:1
-                                                                                     constant:38];
-        
-        self.likeCountHeightConstraint = [NSLayoutConstraint constraintWithItem:_likeCount
-                                                                       attribute:NSLayoutAttributeHeight
-                                                                       relatedBy:NSLayoutRelationEqual
-                                                                          toItem:nil
-                                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                                      multiplier:1
-                                                                        constant:38];
-
-        
-        
-//        self.usernameAndCaptionLabelWidthConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
-//                                                                                    attribute:NSLayoutAttributeWidth
-//                                                                                    relatedBy:NSLayoutRelationEqual
-//                                                                                       toItem:nil
-//                                                                                    attribute:NSLayoutAttributeNotAnAttribute
-//                                                                                   multiplier:1
-//                                                                                     constant:100];
-        
-        self.commentLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
-                                                                         attribute:NSLayoutAttributeHeight
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:nil
-                                                                         attribute:NSLayoutAttributeNotAnAttribute
-                                                                        multiplier:1
-                                                                          constant:100];
-        
-//        self.commentLabelWidthConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
-//                                                                         attribute:NSLayoutAttributeWidth
-//                                                                         relatedBy:NSLayoutRelationEqual
-//                                                                            toItem:nil
-//                                                                         attribute:NSLayoutAttributeNotAnAttribute
-//                                                                        multiplier:1
-//                                                                          constant:100];
-
-        
-//        self.usernameAndCaptionLabelLeftConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
-//                                                                                    attribute:NSLayoutAttributeLeft
-//                                                                                    relatedBy:NSLayoutRelationEqual
-//                                                                                       toItem:_mediaImageView
-//                                                                                    attribute:NSLayoutAttributeLeft
-//                                                                                   multiplier:1
-//                                                                                     constant:0];
-//        
-//        self.commentLabelLeftConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
-//                                                                         attribute:NSLayoutAttributeLeft
-//                                                                         relatedBy:NSLayoutRelationEqual
-//                                                                            toItem:_mediaImageView
-//                                                                         attribute:NSLayoutAttributeLeft
-//                                                                        multiplier:1
-//                                                                          constant:0];
-        
-//        self.commentLabelTopConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
-//                                                                       attribute:NSLayoutAttributeTop
-//                                                                       relatedBy:NSLayoutRelationEqual
-//                                                                          toItem:_usernameAndCaptionLabel
-//                                                                       attribute:NSLayoutAttributeLeft
-//                                                                      multiplier:1
-//                                                                        constant:20];
-        
-//        self.usernameAndCaptionLabelTopConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
-//                                                                       attribute:NSLayoutAttributeTop
-//                                                                       relatedBy:NSLayoutRelationEqual
-//                                                                          toItem:_mediaImageView
-//                                                                       attribute:NSLayoutAttributeBottom
-//                                                                      multiplier:1
-//                                                                        constant:200];
-        
-        [self.contentView addConstraints:@[self.imageHeightConstraint, self.usernameAndCaptionLabelHeightConstraint, self.commentLabelHeightConstraint, self.likeButtonHeightConstraint, self.likeCountHeightConstraint
-                                           ]];
-        
-    }
-    return self;
+                                                                   constant:38];
+    
+    self.commentLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
+                                                                     attribute:NSLayoutAttributeHeight
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:nil
+                                                                     attribute:NSLayoutAttributeNotAnAttribute
+                                                                    multiplier:1
+                                                                      constant:100];
+    
+    [self.contentView addConstraints:@[self.imageHeightConstraint, self.usernameAndCaptionLabelHeightConstraint, self.commentLabelHeightConstraint, self.likeButtonHeightConstraint, self.likeCountHeightConstraint
+                                       ]];
+    
 }
 
-- (void)awakeFromNib {
-    // Initialization code
-}
 
 - (void)layoutSubviews {
     [super layoutSubviews];
@@ -280,10 +243,15 @@ static NSParagraphStyle *paragraphStyle;
 
     // section below moved from setMediaItem
     if (_mediaItem.image) {
-        self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
-    } else {
+        if (isPhone) {
+            self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
+        } else {
 //        NSLog(@"Content View bounds width %f", CGRectGetWidth(self.contentView.bounds));
-        self.imageHeightConstraint.constant = CGRectGetWidth(self.contentView.bounds);
+//        self.imageHeightConstraint.constant = CGRectGetWidth(self.contentView.bounds);
+            self.imageHeightConstraint.constant = 320;
+        }
+    } else {
+        self.imageHeightConstraint.constant = 0;
     }
     
     // hide the line between cells

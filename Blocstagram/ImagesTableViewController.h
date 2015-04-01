@@ -11,6 +11,10 @@
 @interface ImagesTableViewController : UITableViewController
 
 //@property (nonatomic, strong) NSMutableArray *images;
+@property (nonatomic, weak) UIImageView *lastTappedImageView;
+@property (nonatomic, weak) UIImageView *lastLongPressedImageView;
+@property (nonatomic, strong) UIPopoverController *cameraPopover;
+@property (nonatomic, strong) UIPopoverController *sharePopover;
 
 @end
 
